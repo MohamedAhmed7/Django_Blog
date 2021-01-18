@@ -26,6 +26,7 @@ urlpatterns = [
     path('',include('blog.urls')),
 ]
 
+# to handle the file system to save profile pictures
 from django.conf.urls.static import static
 from django.conf import settings
 if settings.DEBUG:
