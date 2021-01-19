@@ -1,0 +1,32 @@
+{% extends "blog/base.html "%}
+{% block content %}
+    <article class="media content-section">
+     <img class="rounded-circle article-img" src="{{user.profile.image.url}}">
+      <div class="media-body">
+        <div class="article-metadata">
+          <a class="mr-2" href="#">{{ post.author }}</a>
+            <small class="text-muted">{{ replies.count }} Replies</small>
+            <small class="text-muted"><b>posted at</b> {{ post.date_posted|date:"N d, Y g:m" }}</small>
+        </div>
+        <h2 class="article-title">{{ post.title }}</a></h2>
+        <p class="article-content">{{ post.content }}</p>
+      </div>
+    </article>
+<!--- Replies Section -->
+    {% if replies %}
+      <h6 class="mb-4 text-muted">Replies</h6>
+      {% for reply in replies %}
+        <article class="media content-section">
+            <img class="rounded-circle article-img" src="{{ reply.author.profile.image.url}}">
+          <div class="media-body">
+
+            <div class="article-metadata mb-2">
+              <a class="mr-1" href="#">{{ reply.author.username }}</a>
+              <small class="text-muted"><b>replied at </b> {{ reply.date_posted|date:"N d, Y g:m" }}</small>
+            </div>
+            <p class="article-content">{{ reply.content }}</p>
+          </div>
+        </article>
+      {% endfor %}
+    {% endif %}
+{% endblock content %}
