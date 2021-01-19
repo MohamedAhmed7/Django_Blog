@@ -4,6 +4,7 @@ from . import views
 
 urlpatterns = [
     path('', views.PostListView.as_view(), name='blog-home'),
+    path('user/<str:username>', views.UserPostListView.as_view(), name='user-posts'),
     path('about/', views.about, name='blog-about'),
     path('post/new/', views.PostCreateView.as_view(), name='post-new'),
     path('post/<int:pk>/update', views.PostUpdateView.as_view(), name='post-update'),
