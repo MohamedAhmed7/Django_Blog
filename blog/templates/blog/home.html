@@ -1,5 +1,6 @@
 {% extends "blog/base.html "%}
 {% block content %}
+    <h2 class="border-bottom mb-3 ml-1">News Feed</h2>
     {% for post in posts %}
         <article class="media content-section">
          <img class="rounded-circle article-img" src="{{post.author.profile.image.url}}">
