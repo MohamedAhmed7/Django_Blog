@@ -1,10 +1,12 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import (ListView, DetailView,
 CreateView, UpdateView, DeleteView)
+from django.contrib import messages
 from .models import Post, Reply
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-
+from django import forms
+from django.forms import HiddenInput
 
 # Create your views here.
 
@@ -38,7 +40,7 @@ class UserPostListView(ListView):
         user = get_object_or_404(User, username = self.kwargs.get('username'))
         context['profile'] = user
         return context
-
+'''
 class PostDetailView(DetailView):
     model = Post
     context_object_name = 'post'
@@ -46,8 +48,54 @@ class PostDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['replies'] = Reply.objects.filter(post = context['post']).all()
-        return context
 
+        return context
+'''
+class addReply(forms.ModelForm):
+    reply = forms.Textarea()
+    class Meta:
+        model = Reply
+        fields = ['reply', 'author', 'post']
+        widgets = {'author': forms.HiddenInput(), 'post':forms.HiddenInput(),
+                   'reply': forms.Textarea(attrs={'rows':3})
+                   }
+
+    def __init__(self, *args, **kwargs):
+        # first call parent's constructor
+        super(addReply, self).__init__(*args, **kwargs)
+        # there's a `fields` property now
+        self.fields['author'].required = False
+        self.fields['post'].required = False
+
+    def save(self, commit=True):
+        user = self.fields['author']
+        post = self.fields['post']
+        content = self.cleaned_data.get('reply')
+        rep = Reply(reply = content, post = post, author = user)
+        rep.save()
+
+
+
+def detailPost(request, pk):
+    post = Post.objects.filter(id = pk).first()
+    form = addReply(request.POST)
+
+    if request.method == 'POST':
+        if form.is_valid() :
+            form.fields['author'] = request.user
+            form.fields['post'] = post
+            form.save()
+            messages.success(request, 'Your Replied to this post')
+            return redirect('post-detail', pk=post.id)
+
+    context = {
+        'title':'home',
+        'post': post ,
+        'replies': Reply.objects.filter(post = post).all(),
+        'form': addReply,
+    }
+
+    return render(request, 'blog/post_detail.html', context)
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     fields = ['title', 'content']

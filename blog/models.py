@@ -16,7 +16,7 @@ class Post(models.Model):
         return reverse('post-detail', kwargs={'pk':self.pk})
 
 class Reply(models.Model):
-    content = models.TextField()
+    reply = models.TextField()
     date_posted = models.DateTimeField(default=timezone.now)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -24,3 +24,5 @@ class Reply(models.Model):
     def __str__(self):
         return self.post.title
 
+    def get_absolute_url(self):
+        return reverse('post-detail', kwargs={'pk': self.pk})
