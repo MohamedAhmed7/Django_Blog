@@ -9,8 +9,8 @@ class profile(models.Model):
         return f'{self.user.username} Profile'
 
     # override the save method to resize the uploaded image
-    def save(self):
-        super().save()
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
         # override the uploaded image if resizing is needed
         img = Image.open(self.image.path)
         if img.width > 300 or img.height > 300:
