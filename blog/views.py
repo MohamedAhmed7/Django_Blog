@@ -81,7 +81,10 @@ def detailPost(request, pk):
     form = addReply(request.POST)
 
     if request.method == 'POST':
-        if form.is_valid() :
+        if not request.user.is_authenticated:
+            messages.warning(request, 'Login First to add replies to posts')
+            return redirect('login')
+        elif form.is_valid() :
             form.fields['author'] = request.user
             form.fields['post'] = post
             form.save()
