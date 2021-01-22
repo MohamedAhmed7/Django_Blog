@@ -1,4 +1,7 @@
 # Django_Blog
+
+## check the deployed version from this link: https://firstblogdjangoapp.herokuapp.com/
+
 ## Setup
 
 The first thing to do is to clone the repository:
